@@ -3,39 +3,22 @@
 @tailwind utilities;
 
 :root {
-    --background: #d2d3d4;
+    --background: #f2fdff;
     --foreground: #263238;
     --primary: #607d8b;
     --primary-foreground: #eceff1;
     --secondary: #cfd8dc;
     --secondary-foreground: #263238;
-    --card: #a9b6bb;
+    --card: #ddf0e3;
     --card-foreground: #263238;
+    --card-new: #feffdc;
     --muted: #566268;
     --muted-foreground: #eceff1;
     --accent: #bbbdbe;
     --accent-foreground: #eceff1;
     --border: #b0bec5;
-    --input: #cfd8dc;
+    --input: #ffffff;
     --ring: #607d8b;
-}
-
-.dark {
-    --background: #1a2225;
-    --foreground: #e7e7e7;
-    --primary: #92aebd;
-    --primary-foreground: #141a1d;
-    --secondary: #4f6a77;
-    --secondary-foreground: #eceff1;
-    --card: #37474f;
-    --card-foreground: #eceff1;
-    --muted: #57717e;
-    --muted-foreground: #b0bec5;
-    --accent: #455a64;
-    --accent-foreground: #eceff1;
-    --border: #546e7a;
-    --input: #596970;
-    --ring: #78909c;
 }
 
 body {
@@ -58,9 +41,10 @@ body {
     width: 100%;
     max-width: 400px;
     padding: 2rem;
-    background-color: var(--card);
+    background-color: var(--card-new);
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 
 .form {
@@ -84,19 +68,21 @@ body {
     width: 95%;
 }
 
-.submit-button {
+button {
     font-weight: bold;
     font-size: 1rem;
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 5px;
     background-color: var(--primary);
+    border: 2px solid var(--primary);
     color: var(--primary-foreground);
     cursor: pointer;
     transition: background-color 0.2s ease, box-shadow 0.3s ease;
+    font-family: Helvetica, Arial, sans-serif;
 }
 
-.submit-button:hover {
+button:hover {
     background-color: var(--primary-foreground);
     color: var(--primary);
 }
@@ -121,7 +107,7 @@ body {
 }
 
 .input:focus {
-    outline: 1px solid var(--background);
+    outline: 1px solid black;
 }
 
 .float-label {
@@ -139,7 +125,7 @@ body {
     border-radius: 3px;
     padding: 4px 4px;
     opacity: 100;
-    background: linear-gradient(to bottom, var(--card) 20%, var(--input) 70%);
+    background: linear-gradient(to bottom, var(--card-new) 40%, var(--input) 70%);
     font-size: 0.75rem;
     color: var(--foreground);
     transform: translateY(-1.1rem);
@@ -174,9 +160,10 @@ body {
 }
 
 .alert {
-    padding: 15px;
+    font-size: .8rem;
+    padding: 10px;
+    margin: 1rem 1rem 0 1rem;
     border-radius: 5px;
-    margin-bottom: 1rem;
     font-family: Arial, sans-serif;
 }
 
@@ -190,6 +177,44 @@ body {
     font-weight: bold;
 }
 
+
+.btn-primary {
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-secondary {
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+
 .content-loading {
     display: flex;
     justify-content: center;
@@ -199,11 +224,160 @@ body {
     color: var(--foreground);
 }
 
+.slide-up {
+    animation: slide-up 0.85s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+
+.slide-up-delay {
+    animation: slideUp 0.8s ease-out 0.2s forwards;
+}
+
+.slide-up-delay-2 {
+    animation: slideUp 0.8s ease-out 0.4s forwards;
+}
+
+.slide-up-delay-3 {
+    animation: slideUp 0.8s ease-out 0.6s forwards;
+}
+
+.fade-in {
+    animation: fadeIn 0.8s ease-out 0.8s forwards;
+}
+
+
+.heading > div:nth-child(2) > p {
+    animation-delay: 0.05s;
+}
+
+.heading > div:nth-child(3) > p {
+    animation-delay: 0.075s;
+}
+
+.heading > div {
+    overflow: hidden;
+}
+
+.heading > div > p {
+    width: max-content;
+    white-space: nowrap;
+    margin: 0;
+    line-height: 117%;
+}
+
+
+.feature-card {
+    background-color: var(--card);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    width: 20rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.feature-card h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: var(--card-foreground);
+}
+
+.feature-card p {
+    color: var(--card-foreground);
+}
+
+.landing-container {
+    height: 90vh;
+}
+
+.main-title {
+    font-size: 3.75rem;
+}
+
+.risk-text {
+    font-size: 6rem;
+    color: #22c55e;
+}
+
+.subtitle {
+    font-size: 1.875rem;
+}
+
+.button-group {
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+}
+
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);
     }
     100% {
         transform: rotate(360deg);
+    }
+}
+
+
+@keyframes slide-up {
+    0% {
+        transform: translateY(100px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* Add these new animation classes */
+.feature-card-animation {
+    opacity: 0;
+    animation: cardSlideUp 0.8s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+.feature-card-animation:nth-child(1) {
+    animation-delay: 0.2s;
+}
+
+.feature-card-animation:nth-child(2) {
+    animation-delay: 0.4s;
+}
+
+.feature-card-animation:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+.feature-card-animation:nth-child(4) {
+    animation-delay: 0.8s;
+}
+
+@keyframes cardSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
