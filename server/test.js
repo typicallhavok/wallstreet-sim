@@ -1,9 +1,8 @@
 const { insertNiftyCache, insertCache } = require("./mongo");
-const { getChartData } = require("./finance");
-c
+const yahooFinance = require("yahoo-finance2").default;
+const fs = require("fs");
 
-insertNiftyCache().then(result => {
-    if(result) {
-        yahooFinance.chart(symbol, { startDate, endDate }).then(result => insertCache("nifty-chart-data", JSON.stringify(result)));
-    }
+yahooFinance.quote("RELIANCE.NS").then((result) => {
+    fs.writeFileSync("quotes.json", JSON.stringify(result));
+    console.log("done");
 });

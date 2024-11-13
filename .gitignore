@@ -38,3 +38,8 @@ next-env.d.ts
 
 # mongo db
 data/
+
+# yahoo finance
+/server/quotes.json
+/server/search.json
+/server/test.js
