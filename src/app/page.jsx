@@ -44,7 +44,7 @@ export default function LandingPage() {
                         </div>
                         <div className="feature-card feature-card-animation">
                             <h3>Portfolio</h3>
-                            <p>Monitor your investments and track performance in real-time</p>
+                            <p>Monitor your investments and track performance</p>
                         </div>
                     </div>
                 </div>

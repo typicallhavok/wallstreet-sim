@@ -1,10 +1,25 @@
-import fs from "fs";
+const yahooFinance = require('yahoo-finance2').default;
+const fs = require("fs");
 
-import { NseIndia } from  "stock-nse-india";
-const  nse = new  NseIndia()
-// To get all symbols from NSE
+const search = async (query) => {
+    const result = await yahooFinance.search(query);
+    const searchData = [];
+    result.quotes.forEach(quote => {
+        const { exchDisp, shortname, isYahooFinance, longname } = quote;
+        if(isYahooFinance)
+            searchData.push({exchDisp, shortname, longname});
+    });
+    return searchData;
+}
 
+const getQuote = async (symbol) => {
+    const result = await yahooFinance.quote(symbol);
+    return result;
+}
 
-nse.getAllStockSymbols().then(symbols => {
-    fs.writeFileSync("symbols.json", JSON.stringify(symbols, null, 2));
-})
+const getChartData = async (symbol, startDate, endDate = new Date()) => {
+    const result = await yahooFinance.chart(symbol, { period1: startDate, period2: endDate });
+    return result;
+}
+
+module.exports = { search, getQuote, getChartData };

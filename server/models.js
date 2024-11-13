@@ -13,5 +13,12 @@ const userSchema = new mongoose.Schema({
     investments: { type: Array, default: [] },
 });
 
+const cacheSchema = new mongoose.Schema({
+    key: { type: String, required: true, unique: true },
+    value: { type: String, required: true },
+});
+
 const User = mongoose.model("User", userSchema);
-module.exports = { User };
+const Cache = mongoose.model("Cache", cacheSchema);
+
+module.exports = { User, Cache };

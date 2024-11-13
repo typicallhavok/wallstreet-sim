@@ -33,6 +33,11 @@ body {
     }
 }
 
+.nFont {
+    font-family: system-ui;
+    font-weight: 200;
+}
+
 .container {
     position: absolute;
     top: 50%;
@@ -45,6 +50,16 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+}
+
+.page-container {
+    width: 80%;
+    height: 84vh;
+    margin: 2.5rem auto;
+    display: flex;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 0.5rem;
 }
 
 .form {
@@ -68,7 +83,7 @@ body {
     width: 95%;
 }
 
-button {
+.button {
     font-weight: bold;
     font-size: 1rem;
     padding: 0.5rem 1rem;
@@ -82,7 +97,7 @@ button {
     font-family: Helvetica, Arial, sans-serif;
 }
 
-button:hover {
+.button:hover {
     background-color: var(--primary-foreground);
     color: var(--primary);
 }
@@ -311,6 +326,19 @@ button:hover {
     margin-top: 2.5rem;
 }
 
+.stocks-found {
+    height: 50vh;
+    overflow-y: auto;
+    font-family: "Helvetica", sans-serif;
+    font-weight: 600;
+}
+
+.stock-longname {
+    font-family: "Arial", sans-serif;
+    font-size: 0.67rem;
+    margin-top: 0.2rem;
+    font-weight: 100;
+}
 
 @keyframes fadeIn {
     from {
