@@ -3,7 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const next = require("next");
 const path = require("path");
-const { insertUser, findUser, insertCache, findCache, insertNiftyCache, pinStock, unpinStock } = require("./mongo");
+const { insertUser, findUser, insertCache, findCache, insertNiftyCache, pinStock, unpinStock, buyStock, sellStock } = require("./mongo");
 const argon2 = require("argon2");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
@@ -199,6 +199,44 @@ app.prepare()
                 res.status(200).json(result);
             else
                 res.status(400).json({ message: "Failed to unpin stock" });
+        });
+
+        server.get("/api/stock/:symbol", async (req, res) => {
+            const { symbol } = req.params;
+            const result = await getQuote(symbol);
+            res.status(200).json(result);
+        });
+
+        server.post("/api/buy/:symbol", async (req, res) => {
+            const { symbol } = req.params;
+            const { quantity } = req.body;
+            const username = req.user.username;
+            const stockQuote = await getQuote(symbol);
+            const result = await buyStock(symbol, quantity, username, stockQuote.regularMarketPrice, stockQuote.shortName);
+            if (result) {
+                res.status(200).json(result);
+            } else {
+                res.status(400).json({ message: "Failed to buy stock" });
+            }
+        });
+
+        server.get("/api/getQuote/:symbol", async (req, res) => {
+            const { symbol } = req.params;
+            const result = await getQuote(symbol);
+            res.status(200).json(result);
+        });
+
+        server.post("/api/sell/:symbol", async (req, res) => {
+            const { symbol } = req.params;
+            const { quantity } = req.body;
+            const username = req.user.username;
+            const stockQuote = await getQuote(symbol);
+            const result = await sellStock(symbol, quantity, username, stockQuote.regularMarketPrice, stockQuote.shortName);
+            if (result) {
+                res.status(200).json(result);
+            } else {
+                res.status(400).json({ message: "Failed to sell stock" });
+            }
         });
 
         server.all("*", (req, res) => {

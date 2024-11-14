@@ -8,6 +8,7 @@ const Login = () => {
     const auth = useAuth();
     const { login, isLoggedIn } = auth || {};
     const router = useRouter();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -26,6 +27,7 @@ const Login = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setLoading(true);
         try {
             await login(formData.username, formData.password);
         } catch (err) {
@@ -35,6 +37,8 @@ const Login = () => {
                 ...prev,
                 password: "",
             }));
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -45,6 +49,10 @@ const Login = () => {
             [name]: value,
         }));
     };
+
+    if (loading) {
+        return <div className="loading"/>;
+    }
 
     return (
         <div className="container shadow-lg rounded-lg">

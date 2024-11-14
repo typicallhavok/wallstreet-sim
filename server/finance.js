@@ -5,9 +5,9 @@ const search = async (query) => {
     const result = await yahooFinance.search(query);
     const searchData = [];
     result.quotes.forEach(quote => {
-        const { exchDisp, shortname, isYahooFinance, longname } = quote;
+        const { exchDisp, shortname, isYahooFinance, longname, symbol } = quote;
         if(isYahooFinance)
-            searchData.push({exchDisp, shortname, longname});
+            searchData.push({exchDisp, shortname, longname, symbol});
     });
     return searchData;
 }

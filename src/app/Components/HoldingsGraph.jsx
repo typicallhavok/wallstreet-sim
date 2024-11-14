@@ -31,7 +31,7 @@ const HoldingsGraph = ({ stocks }) => {
     ];
 
     const datasets = stocks.map((stock, index) => ({
-        label: stock.symbol || stock.name,
+        label: stock.shortName || stock.name,
         data: [stock.amount],
         backgroundColor: colorPalette[index % colorPalette.length],
         barPercentage: 0.95,
@@ -82,6 +82,10 @@ const HoldingsGraph = ({ stocks }) => {
             },
         },
     };
+
+    if(stocks.length === 0) {
+        return <div className="w-full h-full flex justify-center items-center font-bold text-2xl p-5">No holdings</div>;
+    }
 
     return (
         <div className="w-full h-full">

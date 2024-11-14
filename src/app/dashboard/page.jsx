@@ -38,7 +38,10 @@ const Dashboard = () => {
                                                 : "text-red-500"
                                         } pb-2 pr-96`}
                                     >
-                                        {pl / 1000}k
+                                        {(pl / 1000 != 0 &&
+                                            (pl / 1000).toFixed(2)) ||
+                                            0}
+                                        k
                                     </p>
                                     <p className="text-md text-secondary px-2">
                                         P&L
@@ -48,13 +51,13 @@ const Dashboard = () => {
                                     <p className="text-md text-secondary px-5 nFont">
                                         Current Value:{" "}
                                         <span className="text-black">
-                                            {user?.funds / 1000}k
+                                            {(user?.funds / 1000).toFixed(2)}k
                                         </span>
                                     </p>
                                     <p className="text-md text-secondary px-5 nFont">
                                         Investment:{" "}
                                         <span className="text-black">
-                                            {user?.funds / 1000}k
+                                            {(user?.funds / 1000).toFixed(2)}k
                                         </span>
                                     </p>
                                 </div>
