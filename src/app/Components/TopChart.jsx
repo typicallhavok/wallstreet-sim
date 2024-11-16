@@ -23,7 +23,7 @@ ChartJS.register(
     Legend
 );
 
-const StockChart = () => {
+const StockChart = ({setError}) => {
     const [quotes, setQuotes] = useState(null);
 
     useEffect(() => {
@@ -34,7 +34,7 @@ const StockChart = () => {
                 const parsedData = JSON.parse(data).quotes;
                 setQuotes(parsedData);
             } catch (error) {
-                console.error("Failed to fetch data:", error);
+                setError(error);
             }
         };
         fetchData();

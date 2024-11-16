@@ -19,7 +19,12 @@ ChartJS.register(
     Legend
 );
 
-const HoldingsGraph = ({ stocks }) => {
+import { useState } from "react";
+
+const HoldingsGraph = ({ stocks, currentPrices }) => {
+
+    const [viewType, setViewType] = useState("investment");
+
     const colorPalette = [
         "#4a66ff",
         "#00caff",
@@ -31,8 +36,14 @@ const HoldingsGraph = ({ stocks }) => {
     ];
 
     const datasets = stocks.map((stock, index) => ({
-        label: stock.shortName || stock.name,
-        data: [stock.amount],
+        label: stock.name,
+        data: [
+            viewType === "investment"
+                ? stock.amount
+                : currentPrices.find(
+                      (currentStock) => currentStock.symbol === stock.symbol
+                  ).price * stock.quantity,
+        ],
         backgroundColor: colorPalette[index % colorPalette.length],
         barPercentage: 0.95,
         categoryPercentage: 1.0,
@@ -53,7 +64,17 @@ const HoldingsGraph = ({ stocks }) => {
                     display: false,
                 },
                 min: 0,
-                max: stocks.reduce((acc, stock) => acc + stock.amount, 0),
+                max: stocks.reduce(
+                    (acc, stock) =>
+                        acc +
+                        (viewType === "investment"
+                            ? stock.amount
+                            : currentPrices.find(
+                                  (currentStock) =>
+                                      currentStock.symbol === stock.symbol
+                              ).price * stock.quantity),
+                    0
+                ),
             },
             y: {
                 stacked: true,
@@ -83,20 +104,58 @@ const HoldingsGraph = ({ stocks }) => {
         },
     };
 
-    if(stocks.length === 0) {
-        return <div className="w-full h-full flex justify-center items-center font-bold text-2xl p-5">No holdings</div>;
+    if (stocks.length === 0) {
+        return (
+            <div className="w-full h-full flex justify-center items-center font-bold text-2xl p-5">
+                No holdings
+            </div>
+        );
     }
 
     return (
         <div className="w-full h-full">
             <Bar data={data} options={options} />
             <div className="flex flex-row justify-between items-center my-2">
-                <span className="text-black text-2xl">₹{stocks.reduce((acc, stock) => acc + stock.amount, 0).toLocaleString()}</span>
+                <span className="text-black text-2xl">
+                    ₹
+                    {stocks
+                        .reduce(
+                            (acc, stock) =>
+                                acc +
+                                (viewType === "investment"
+                                    ? stock.amount
+                                    : currentPrices.find(
+                                          (currentStock) =>
+                                              currentStock.symbol === stock.symbol
+                                      ).price * stock.quantity
+                                ),
+                            0
+                        )
+                        .toLocaleString()}
+                </span>
                 <span className="text-secondary text-sm flex flex-row gap-2">
-                    <input type="radio" name="view" id="current" className="bg-gray-100 rounded-md p-1" checked/>
-                    <label htmlFor="current" className="text-gray-500">Current Value</label>
-                    <input type="radio" name="view" id="investment" className="bg-gray-100 rounded-md p-1" />
-                    <label htmlFor="investment" className="text-gray-500">Investment</label>
+                    <input
+                        type="radio"
+                        name="view"
+                        id="current"
+                        className="bg-gray-100 rounded-md p-1"
+                        checked={viewType === "current"}
+                        onChange={() => setViewType("current")}
+                    />
+                    <label htmlFor="current" className="text-gray-500">
+                        Current Value
+                    </label>
+                    <input
+                        type="radio"
+                        name="view"
+                        id="investment"
+                        className="bg-gray-100 rounded-md p-1"
+                        checked={viewType === "investment"}
+                        onChange={() => setViewType("investment")}
+                    />
+                    <label htmlFor="investment" className="text-gray-500">
+                        Investment
+                    </label>
                 </span>
             </div>
         </div>

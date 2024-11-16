@@ -37,7 +37,6 @@ const Login = () => {
                 ...prev,
                 password: "",
             }));
-        } finally {
             setLoading(false);
         }
     };

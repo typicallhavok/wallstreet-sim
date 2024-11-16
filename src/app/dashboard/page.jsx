@@ -6,9 +6,45 @@ import HoldingsGraph from "../Components/HoldingsGraph";
 import Watchlist from "../Components/Watchlist";
 import StockChart from "../Components/TopChart";
 import GraphIcon from "../Components/GraphIcon";
+import { useEffect } from "react";
+
 const Dashboard = () => {
     const { user, loading } = useAuth();
     const [pl, setPl] = useState(0);
+    const [currentPrices, setCurrentPrices] = useState([]);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        async function calculatePL() {
+            if (user !== null) {
+
+                let totalPl = 0;
+                const promises = user.holdings.map(async (holding) => {
+                    try {
+                        const currentPrice = await fetch(`/api/getPrice/${holding.symbol}`);
+                        const data = await currentPrice.json();
+                        return { symbol: holding.symbol, price: data };
+                    } catch (error) {
+                        setError(error);
+                    }
+                });
+                
+                const priceResults = await Promise.all(promises);
+                setCurrentPrices(priceResults);
+                
+                const plResults = priceResults.map((result, index) => {
+                    const holding = user.holdings[index];
+                    return (result.price * holding.quantity - holding.amount);
+                });
+                console.log(plResults);
+                
+                totalPl = plResults.reduce((sum, value) => sum + value, 0);
+                setPl(totalPl);
+            }
+        }
+        
+        calculatePL();
+    }, [user]);
 
     if (loading) {
         return <div className="loading" />;
@@ -24,7 +60,7 @@ const Dashboard = () => {
                     <div className="flex flex-col gap-5">
                         <div className="flex flex-col gap-2 p-1 px-5">
                             <p className="flex flex-row gap-3 text-2xl font-bold pt-2 mt-2">
-                                <SuitcaseIcon />
+                                <SuitcaseIcon setError={setError}/>
                                 Holdings
                             </p>
                             <div className="flex flex-row gap-2">
@@ -47,7 +83,7 @@ const Dashboard = () => {
                                         P&L
                                     </p>
                                 </div>
-                                <div className="flex flex-col gap-2 justify-center pl-16">
+                                <div className="flex flex-col gap-2 justify-center pl-8">
                                     <p className="text-md text-secondary px-5 nFont">
                                         Current Value:{" "}
                                         <span className="text-black">
@@ -64,19 +100,22 @@ const Dashboard = () => {
                             </div>
                         </div>
                         <span className="border-b-2 border-primary px-4 pb-2">
-                            <HoldingsGraph stocks={user.holdings} />
+                            <HoldingsGraph stocks={user.holdings} currentPrices={currentPrices} setError={setError}/>
                         </span>
                         <div className="flex flex-col gap-2 px-5">
                             <p className="flex flex-row gap-3 text-2xl font-bold mb-3 py-1">
-                                <GraphIcon />
+                                <GraphIcon setError={setError}/>
                                 Market Overview
                             </p>
 
-                            <StockChart />
+                            <StockChart setError={setError}/>
                         </div>
                     </div>
                 </div>
-                <Watchlist />
+                <Watchlist setError={setError}/>
+                <div className="flex flex-col gap-2 px-5 absolute bottom-0 w-3/5">
+                    {error && <p className="text-red-500">{error.message}</p>}
+                </div>
             </div>
         </>
     );

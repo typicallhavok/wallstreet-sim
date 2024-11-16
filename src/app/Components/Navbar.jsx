@@ -12,7 +12,7 @@ const Navbar = () => {
             <div className="max-w-7xl mx-auto px-12">
                 <div className="flex justify-between h-16">
                     <div className="flex items-center font-bold text-2xl">
-                        <Link href="/">StolkWong</Link>
+                        <Link href="/">StockWong</Link>
                     </div>
 
                     <div className="flex items-center">

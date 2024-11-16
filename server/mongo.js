@@ -87,7 +87,8 @@ const unpinStock = async (symbol, username) => {
     return false;
 };
 
-const buyStock = async (symbol, quantity, username, price, name) => {
+const buyStock = async (symbol, quantity, username, date=new Date(), price, name) => {
+    date = new Date(date);
     quantity = parseInt(quantity);
     try {
         if (!symbol || !quantity || !username || !price || !name) {
@@ -115,14 +116,14 @@ const buyStock = async (symbol, quantity, username, price, name) => {
         if (existingHolding) {
             existingHolding.quantity += quantity;
             existingHolding.amount += amount;
-            existingHolding.dates.push({ quantity, date: new Date() });
+            existingHolding.dates.push({ quantity, date });
             user.markModified("holdings");
         } else {
             user.holdings.push({
                 symbol,
                 quantity,
                 name,
-                dates: [{ quantity, date: new Date() }],
+                dates: [{ quantity, date }],
                 amount,
             });
         }
@@ -132,7 +133,7 @@ const buyStock = async (symbol, quantity, username, price, name) => {
             quantity,
             price,
             name,
-            date: new Date(),
+            date,
             type: "buy",
             amount,
         });
@@ -176,6 +177,11 @@ const sellStock = async (symbol, quantity, username, price, name) => {
                 throw new Error("Insufficient quantity");
             }
             existingHolding.quantity -= quantity;
+            if (existingHolding.quantity === 0) {
+                user.holdings = user.holdings.filter(
+                    (item) => item.symbol !== symbol
+                );
+            }
             existingHolding.amount -= amount;
 
             user.markModified("holdings");

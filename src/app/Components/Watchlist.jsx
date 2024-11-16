@@ -8,7 +8,7 @@ import BuyMenu from "./BuyMenu";
 import SellMenu from "./SellMenu";
 import Image from "next/image";
 
-const Watchlist = () => {
+const Watchlist = ({setError}) => {
     const { user } = useAuth();
     const [watchlist, setWatchlist] = useState([]);
     const [displayWatchlist, setDisplayWatchlist] = useState([]);
@@ -21,30 +21,32 @@ const Watchlist = () => {
 
     useEffect(() => {
         if (user?.watchlist) {
-            setWatchlist([...user.watchlist]);
+            setWatchlist(user.watchlist);
+            setDisplayWatchlist([]);
         }
     }, [user?.watchlist]);
 
     useEffect(() => {
         const fetchQuotes = async () => {
-            const promises = watchlist.map(async (stockSymbol) => {
-                try {
-                    if (!displayWatchlist.some(item => item.symbol === stockSymbol)) {
-                        console.log("fetching", stockSymbol);
-                        const result = await fetch(`/api/getQuote/${stockSymbol}`);
-                        
-                        if (!result.ok) {
-                            console.error(`Error fetching ${stockSymbol}:`, result.status);
-                            return null;
-                        }
+            const stocksToFetch = watchlist.filter(
+                stockSymbol => !displayWatchlist.some(item => item.symbol === stockSymbol)
+            );
 
-                        const data = await result.json();
-                        console.log(`Data for ${stockSymbol}:`, data);
-                        return data;
+            if (stocksToFetch.length === 0) return;
+
+            const promises = stocksToFetch.map(async (stockSymbol) => {
+                try {
+                    const result = await fetch(`/api/getQuote/${stockSymbol}`);
+                    
+                    if (!result.ok) {
+                        setError(result.status);
+                        return null;
                     }
-                    return null;
+
+                    const data = await result.json();
+                    return data;
                 } catch (error) {
-                    console.error(`Error processing ${stockSymbol}:`, error);
+                    setError(error);
                     return null;
                 }
             });
@@ -54,10 +56,10 @@ const Watchlist = () => {
                 const newQuotes = results.filter(Boolean);
                 
                 if (newQuotes.length > 0) {
-                    setDisplayWatchlist(prev => [...prev, ...newQuotes]);
+                    setDisplayWatchlist(newQuotes);
                 }
             } catch (error) {
-                console.error("Error processing quotes:", error);
+                setError(error);
             }
         };
 
@@ -76,8 +78,12 @@ const Watchlist = () => {
         setSearch(searchValue);
 
         if (searchValue.length > 2) {
+            try {
             const result = await searchStocks(searchValue);
             setStocksFound(result);
+        } catch(error) {
+                setError(error)
+            }
         } else {
             setStocksFound([]);
         }
@@ -171,7 +177,7 @@ const Watchlist = () => {
                                     {stock.shortname}
                                 </span>
                                 <div className="flex flex-row gap-2 items-center">
-                                    <span className="text-secondary stock-longname">
+                                    <span className="text-primary stock-longname">
                                         {stock.longname}
                                     </span>
                                     <span
@@ -236,7 +242,7 @@ const Watchlist = () => {
                         ))}
                     </div>
                 </div>
-                <div className="flex flex-col gap-2 py-5 w-full shadow-lg font2">
+                <div className="flex flex-col py-5 w-full shadow-lg font2">
                     {displayWatchlist?.length > 0 ? (
                         displayWatchlist.map((stock) => (
                             <span

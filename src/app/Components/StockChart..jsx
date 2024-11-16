@@ -12,14 +12,11 @@ import {
 import "chartjs-adapter-date-fns";
 import { useState, useEffect } from "react";
 
-// Register Chart.js components
 ChartJS.register(TimeScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const StockChart = ({ quotes }) => {
-    // Exit if data is not yet loaded
     if (!quotes) return null;
 
-    // Format the data for Chart.js
     const chartData = {
         labels: quotes.map((quote) => new Date(quote.date)),
         datasets: [

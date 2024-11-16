@@ -573,6 +573,9 @@ video {
 .inset-0 {
   inset: 0px;
 }
+.bottom-0 {
+  bottom: 0px;
+}
 .right-2 {
   right: 0.5rem;
 }
@@ -632,6 +635,9 @@ video {
 }
 .h-\[320px\] {
   height: 320px;
+}
+.h-\[440px\] {
+  height: 440px;
 }
 .h-\[75px\] {
   height: 75px;
@@ -861,8 +867,8 @@ video {
 .pb-2 {
   padding-bottom: 0.5rem;
 }
-.pl-16 {
-  padding-left: 4rem;
+.pl-8 {
+  padding-left: 2rem;
 }
 .pr-44 {
   padding-right: 11rem;
@@ -890,6 +896,9 @@ video {
 }
 .text-\[\.6rem\] {
   font-size: .6rem;
+}
+.text-\[\.7rem\] {
+  font-size: .7rem;
 }
 .text-sm {
   font-size: 0.875rem;

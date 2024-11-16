@@ -3,11 +3,26 @@ require("dotenv").config();
 const express = require("express");
 const next = require("next");
 const path = require("path");
-const { insertUser, findUser, insertCache, findCache, insertNiftyCache, pinStock, unpinStock, buyStock, sellStock } = require("./mongo");
+const {
+    insertUser,
+    findUser,
+    insertCache,
+    findCache,
+    insertNiftyCache,
+    pinStock,
+    unpinStock,
+    buyStock,
+    sellStock,
+} = require("./mongo");
 const argon2 = require("argon2");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
-const { search, getQuote, getChartData } = require("./finance");
+const {
+    search,
+    getQuote,
+    getChartData,
+    getPrice,
+} = require("./finance");
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({
@@ -16,9 +31,11 @@ const app = next({
 });
 const handle = app.getRequestHandler();
 
-insertNiftyCache().then(result => {
-    if(result) {
-        getChartData("^NSEI", "2018-01-01").then(result => insertCache("nifty-chart-data", JSON.stringify(result)));
+insertNiftyCache().then((result) => {
+    if (result) {
+        getChartData("^NSEI", "2018-01-01").then((result) =>
+            insertCache("nifty-chart-data", JSON.stringify(result))
+        );
     }
 });
 
@@ -167,7 +184,8 @@ app.prepare()
         server.get("/api/search", async (req, res) => {
             const { q } = req.query;
             const result = await search(q);
-            res.status(200).json(result);
+            if (result) res.status(200).json(result);
+            else res.status(400).json({ message: "Failed to search" });
         });
 
         server.get("/api/getNiftyChartData", async (req, res) => {
@@ -177,42 +195,57 @@ app.prepare()
 
         server.get("/api/pin", async (req, res) => {
             const token = req.cookies?.token;
-            if(!token) {
-                return res.status(401).json({ message: "Authentication required" });
+            if (!token) {
+                return res
+                    .status(401)
+                    .json({ message: "Authentication required" });
             }
             const { symbol, username } = req.query;
             const result = await pinStock(symbol, username);
-            if(result)
-                res.status(200).json(result);
-            else
-                res.status(400).json({ message: "Failed to pin stock" });
+            if (result) res.status(200).json(result);
+            else res.status(400).json({ message: "Failed to pin stock" });
         });
 
         server.get("/api/unpin", async (req, res) => {
             const token = req.cookies?.token;
-            if(!token) {
-                return res.status(401).json({ message: "Authentication required" });
+            if (!token) {
+                return res
+                    .status(401)
+                    .json({ message: "Authentication required" });
             }
             const { symbol, username } = req.query;
             const result = await unpinStock(symbol, username);
-            if(result)
-                res.status(200).json(result);
-            else
-                res.status(400).json({ message: "Failed to unpin stock" });
+            if (result) res.status(200).json(result);
+            else res.status(400).json({ message: "Failed to unpin stock" });
         });
 
         server.get("/api/stock/:symbol", async (req, res) => {
             const { symbol } = req.params;
             const result = await getQuote(symbol);
-            res.status(200).json(result);
+            if (result) res.status(200).json(result);
+            else res.status(400).json({ message: "Failed to get quote" });
         });
 
         server.post("/api/buy/:symbol", async (req, res) => {
             const { symbol } = req.params;
-            const { quantity } = req.body;
+            const { quantity, date } = req.body;
             const username = req.user.username;
             const stockQuote = await getQuote(symbol);
-            const result = await buyStock(symbol, quantity, username, stockQuote.regularMarketPrice, stockQuote.shortName);
+            let price = stockQuote.regularMarketPrice;
+            if(date) {
+                price = await getPrice(symbol, date);
+            }
+            if (!stockQuote) {
+                return res.status(400).json({ message: "Failed to get quote" });
+            }
+            const result = await buyStock(
+                symbol,
+                quantity,
+                username,
+                date,
+                price,
+                stockQuote.shortName,
+            );
             if (result) {
                 res.status(200).json(result);
             } else {
@@ -223,7 +256,8 @@ app.prepare()
         server.get("/api/getQuote/:symbol", async (req, res) => {
             const { symbol } = req.params;
             const result = await getQuote(symbol);
-            res.status(200).json(result);
+            if (result) res.status(200).json(result);
+            else res.status(400).json({ message: "Failed to get quote" });
         });
 
         server.post("/api/sell/:symbol", async (req, res) => {
@@ -231,11 +265,31 @@ app.prepare()
             const { quantity } = req.body;
             const username = req.user.username;
             const stockQuote = await getQuote(symbol);
-            const result = await sellStock(symbol, quantity, username, stockQuote.regularMarketPrice, stockQuote.shortName);
+            const result = await sellStock(
+                symbol,
+                quantity,
+                username,
+                stockQuote.regularMarketPrice,
+                stockQuote.shortName
+            );
             if (result) {
                 res.status(200).json(result);
             } else {
                 res.status(400).json({ message: "Failed to sell stock" });
+            }
+        });
+
+        server.get("/api/getPrice/:symbol", async (req, res) => {
+            const { symbol } = req.params;
+            const { date } = req.query;
+            const result = await getPrice(symbol, date);
+            
+            if (result) {
+                res.status(200).json(result);
+            } else {
+                res.status(400).json({
+                    message: "Failed to get price"
+                });
             }
         });
 

@@ -9,6 +9,11 @@ const spartan = League_Spartan({
     display: 'swap',
 });
 
+export const metadata = {
+    title: 'StockWong',
+    description: 'Stock tracking and analysis platform',
+};
+
 export default function RootLayout({ children }) {
     return (
         <html lang="en">
