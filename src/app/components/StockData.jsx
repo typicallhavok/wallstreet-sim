@@ -1,4 +1,3 @@
-import quotes from "../assets/misc/quotes.json";
 import { useAuth } from "../contexts/AuthContext";
 import { useEffect, useState } from "react";
 import BuyMenu from "./BuyMenu";
