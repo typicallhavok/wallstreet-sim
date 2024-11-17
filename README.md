@@ -5,8 +5,13 @@ This is an app where you can practice investing and gain experience, before inve
 ## Setup
 
 Setup mongodb server and database stonks.
+
 Run these commands to run the server
+
 To build
+
 `yarn build`
+
 Run server
+
 `yarn dev`
