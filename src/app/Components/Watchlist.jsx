@@ -6,9 +6,10 @@ import pinImage from "../assets/img/pinIMG.png";
 import unpinImage from "../assets/img/unpinIMG.png";
 import BuyMenu from "./BuyMenu";
 import SellMenu from "./SellMenu";
+// import watchlistImg from "../assets/img/watchlistIMG.png";
 import Image from "next/image";
 
-const Watchlist = ({setError}) => {
+const Watchlist = ({ setError }) => {
     const { user } = useAuth();
     const [watchlist, setWatchlist] = useState([]);
     const [displayWatchlist, setDisplayWatchlist] = useState([]);
@@ -29,7 +30,10 @@ const Watchlist = ({setError}) => {
     useEffect(() => {
         const fetchQuotes = async () => {
             const stocksToFetch = watchlist.filter(
-                stockSymbol => !displayWatchlist.some(item => item.symbol === stockSymbol)
+                (stockSymbol) =>
+                    !displayWatchlist.some(
+                        (item) => item.symbol === stockSymbol
+                    )
             );
 
             if (stocksToFetch.length === 0) return;
@@ -37,7 +41,7 @@ const Watchlist = ({setError}) => {
             const promises = stocksToFetch.map(async (stockSymbol) => {
                 try {
                     const result = await fetch(`/api/getQuote/${stockSymbol}`);
-                    
+
                     if (!result.ok) {
                         setError(result.status);
                         return null;
@@ -54,9 +58,9 @@ const Watchlist = ({setError}) => {
             try {
                 const results = await Promise.all(promises);
                 const newQuotes = results.filter(Boolean);
-                
+
                 if (newQuotes.length > 0) {
-                    setDisplayWatchlist(newQuotes);
+                    setDisplayWatchlist([...displayWatchlist, ...newQuotes]);
                 }
             } catch (error) {
                 setError(error);
@@ -79,10 +83,10 @@ const Watchlist = ({setError}) => {
 
         if (searchValue.length > 2) {
             try {
-            const result = await searchStocks(searchValue);
-            setStocksFound(result);
-        } catch(error) {
-                setError(error)
+                const result = await searchStocks(searchValue);
+                setStocksFound(result);
+            } catch (error) {
+                setError(error);
             }
         } else {
             setStocksFound([]);
@@ -106,19 +110,19 @@ const Watchlist = ({setError}) => {
 
     const handlePin = async (stock) => {
         if (watchlist.includes(stock.symbol)) {
-            const result = await fetch(
-                `/api/unpin?symbol=${stock.symbol}&username=${user.username}`,
-                { credentials: "include" }
-            );
+            const result = await fetch(`/api/unpin?symbol=${stock.symbol}`, {
+                credentials: "include",
+            });
             if (result.status === 200) {
-                setWatchlist(watchlist.filter(item => item !== stock.symbol));
-                setDisplayWatchlist(prev => prev.filter(item => item.symbol !== stock.symbol));
+                setWatchlist(watchlist.filter((item) => item !== stock.symbol));
+                setDisplayWatchlist((prev) =>
+                    prev.filter((item) => item.symbol !== stock.symbol)
+                );
             }
         } else {
-            const result = await fetch(
-                `/api/pin?symbol=${stock.symbol}&username=${user.username}`,
-                { credentials: "include" }
-            );
+            const result = await fetch(`/api/pin?symbol=${stock.symbol}`, {
+                credentials: "include",
+            });
             if (result.status === 200) {
                 setWatchlist([...watchlist, stock.symbol]);
             }
@@ -142,6 +146,14 @@ const Watchlist = ({setError}) => {
 
     return (
         <div className="w-2/5 p-10 shadow-md">
+            {/* <div className="text-4xl font-bold border-b-2 border-primary p-5 text-black flex flex-row mb-8">
+                <Image
+                    src={watchlistImg}
+                    alt="Watchlist"
+                    className="w-8 h-8 mr-3"
+                />
+                <p>Watchlist</p>
+            </div> */}
             <div className="search-container">
                 <div className="search relative">
                     <input
@@ -242,7 +254,11 @@ const Watchlist = ({setError}) => {
                         ))}
                     </div>
                 </div>
-                <div className="flex flex-col py-5 w-full shadow-lg font2">
+                <div
+                    className={`flex flex-col my-5 w-full ${
+                        displayWatchlist?.length > 0 && "shadow-lg"
+                    } font2 text-[.85rem]`}
+                >
                     {displayWatchlist?.length > 0 ? (
                         displayWatchlist.map((stock) => (
                             <span

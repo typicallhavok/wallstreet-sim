@@ -212,6 +212,22 @@ const sellStock = async (symbol, quantity, username, price, name) => {
     }
 };
 
+const addFunds = async (amount, username) => {
+    const user = await findUser(username);
+    user.funds += amount;
+    user.orders.push({
+        symbol: "FUNDS",
+        quantity: amount,
+        price: 0,
+        name: "Funds",
+        date: new Date(),
+        type: "addFunds",
+        amount,
+    });
+    const result = await user.save();
+    return result;
+};
+
 module.exports = {
     insertUser,
     findUser,
@@ -222,4 +238,5 @@ module.exports = {
     unpinStock,
     buyStock,
     sellStock,
+    addFunds,
 };

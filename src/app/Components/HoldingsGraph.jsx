@@ -23,7 +23,7 @@ import { useState } from "react";
 
 const HoldingsGraph = ({ stocks, currentPrices }) => {
 
-    const [viewType, setViewType] = useState("investment");
+    const [viewType, setViewType] = useState("current");
 
     const colorPalette = [
         "#4a66ff",

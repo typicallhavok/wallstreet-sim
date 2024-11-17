@@ -9,10 +9,11 @@ import GraphIcon from "../Components/GraphIcon";
 import { useEffect } from "react";
 
 const Dashboard = () => {
-    const { user, loading } = useAuth();
+    const { user } = useAuth();
     const [pl, setPl] = useState(0);
     const [currentPrices, setCurrentPrices] = useState([]);
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function calculatePL() {
@@ -40,6 +41,7 @@ const Dashboard = () => {
                 
                 totalPl = plResults.reduce((sum, value) => sum + value, 0);
                 setPl(totalPl);
+                setLoading(false);
             }
         }
         

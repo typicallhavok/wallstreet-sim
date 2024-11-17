@@ -98,7 +98,7 @@ body {
 }
 
 .button:hover {
-    background-color: var(--primary-foreground);
+    background-color: white;
     color: var(--primary);
 }
 
@@ -342,7 +342,6 @@ body {
 
 .font2 {
     font-family: "Helvetica", sans-serif;
-    font-size: 0.85rem;
 }
 
 @keyframes fadeIn {
@@ -414,3 +413,30 @@ body {
         transform: translateY(0);
     }
 }
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 20px;
+    margin: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: gray;
+    border-radius: 20px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+::-webkit-scrollbar-button {
+    display: none;
+}
+
