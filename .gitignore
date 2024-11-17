@@ -47,4 +47,4 @@ data/
 /src/app/assets/misc/quotes.json
 
 #vscode
-.vscode/
+/.vscode/
