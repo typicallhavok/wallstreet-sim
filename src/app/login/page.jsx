@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useAuth } from "../Contexts/AuthContext.jsx";
+import { useAuth } from "../contexts/AuthContext.jsx";
 import { useRouter } from "next/navigation";
 
 const Login = () => {

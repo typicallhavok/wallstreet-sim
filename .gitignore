@@ -45,3 +45,6 @@ data/
 /server/search.json
 /server/test.js
 /src/app/assets/misc/quotes.json
+
+#vscode
+.vscode/

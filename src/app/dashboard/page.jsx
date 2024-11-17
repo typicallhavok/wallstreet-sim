@@ -1,11 +1,11 @@
 "use client";
-import { useAuth } from "../Contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import { useState } from "react";
-import SuitcaseIcon from "../Components/SuitcaseIcon";
-import HoldingsGraph from "../Components/HoldingsGraph";
-import Watchlist from "../Components/Watchlist";
-import StockChart from "../Components/TopChart";
-import GraphIcon from "../Components/GraphIcon";
+import SuitcaseIcon from "../components/SuitcaseIcon";
+import HoldingsGraph from "../components/HoldingsGraph";
+import Watchlist from "../components/Watchlist";
+import StockChart from "../components/TopChart";
+import GraphIcon from "../components/GraphIcon";
 import { useEffect } from "react";
 
 const Dashboard = () => {
@@ -18,8 +18,6 @@ const Dashboard = () => {
     useEffect(() => {
         async function calculatePL() {
             if (user !== null) {
-
-                let totalPl = 0;
                 const promises = user.holdings.map(async (holding) => {
                     try {
                         const currentPrice = await fetch(`/api/getPrice/${holding.symbol}`);
@@ -35,11 +33,12 @@ const Dashboard = () => {
                 
                 const plResults = priceResults.map((result, index) => {
                     const holding = user.holdings[index];
-                    return (result.price * holding.quantity - holding.amount);
+                    const currentValue = result.price * holding.quantity;
+                    const initialInvestment = holding.amount;
+                    return currentValue - initialInvestment;
                 });
-                console.log(plResults);
                 
-                totalPl = plResults.reduce((sum, value) => sum + value, 0);
+                const totalPl = plResults.reduce((sum, value) => sum + value, 0);
                 setPl(totalPl);
                 setLoading(false);
             }
@@ -95,7 +94,7 @@ const Dashboard = () => {
                                     <p className="text-md text-secondary px-5 nFont">
                                         Investment:{" "}
                                         <span className="text-black">
-                                            {(user?.funds / 1000).toFixed(2)}k
+                                            {(user.holdings.reduce((sum, holding) => sum + holding.amount, 0) / 1000).toFixed(2)}k
                                         </span>
                                     </p>
                                 </div>

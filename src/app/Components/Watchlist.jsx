@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useAuth } from "../Contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import SmallGraphImage from "../assets/img/graphIMG.png";
 import pinImage from "../assets/img/pinIMG.png";
 import unpinImage from "../assets/img/unpinIMG.png";
@@ -73,8 +73,16 @@ const Watchlist = ({ setError }) => {
     }, [watchlist]);
 
     const searchStocks = async (search) => {
-        const result = await fetch(`/api/search?q=${search}`);
-        return result.json();
+        try {
+            const result = await fetch(`/api/search?q=${search}`);
+            if (!result.ok) {
+                throw new Error(`HTTP error! status: ${result.status}`);
+            }
+            return result.json();
+        } catch (error) {
+            setError(error.message || 'Failed to search stocks');
+            return [];
+        }
     };
 
     const handleSearch = async (e) => {
@@ -109,23 +117,33 @@ const Watchlist = ({ setError }) => {
     };
 
     const handlePin = async (stock) => {
-        if (watchlist.includes(stock.symbol)) {
-            const result = await fetch(`/api/unpin?symbol=${stock.symbol}`, {
-                credentials: "include",
-            });
-            if (result.status === 200) {
-                setWatchlist(watchlist.filter((item) => item !== stock.symbol));
-                setDisplayWatchlist((prev) =>
-                    prev.filter((item) => item.symbol !== stock.symbol)
-                );
+        try {
+            if (watchlist.includes(stock.symbol)) {
+                const result = await fetch(`/api/unpin?symbol=${stock.symbol}`, {
+                    credentials: "include",
+                });
+                if (!result.ok) {
+                    throw new Error(`HTTP error! status: ${result.status}`);
+                }
+                if (result.status === 200) {
+                    setWatchlist(watchlist.filter((item) => item !== stock.symbol));
+                    setDisplayWatchlist((prev) =>
+                        prev.filter((item) => item.symbol !== stock.symbol)
+                    );
+                }
+            } else {
+                const result = await fetch(`/api/pin?symbol=${stock.symbol}`, {
+                    credentials: "include",
+                });
+                if (!result.ok) {
+                    throw new Error(`HTTP error! status: ${result.status}`);
+                }
+                if (result.status === 200) {
+                    setWatchlist([...watchlist, stock.symbol]);
+                }
             }
-        } else {
-            const result = await fetch(`/api/pin?symbol=${stock.symbol}`, {
-                credentials: "include",
-            });
-            if (result.status === 200) {
-                setWatchlist([...watchlist, stock.symbol]);
-            }
+        } catch (error) {
+            setError(error.message || 'Failed to update watchlist');
         }
     };
 
@@ -218,7 +236,12 @@ const Watchlist = ({ setError }) => {
                                         >
                                             S
                                         </button>
-                                        <button className="border border-black px-1 py-[.08rem] rounded hover:bg-gray-300">
+                                        <button
+                                            className="border border-black px-1 py-[.08rem] rounded hover:bg-gray-300"
+                                            onClick={() =>
+                                                (window.location.href = `/stocks/${stock.symbol}`)
+                                            }
+                                        >
                                             <Image
                                                 src={SmallGraphImage}
                                                 alt="graph"
@@ -317,7 +340,12 @@ const Watchlist = ({ setError }) => {
                                     >
                                         S
                                     </button>
-                                    <button className="border border-black px-1 py-[.08rem] rounded hover:bg-gray-300">
+                                    <button
+                                        className="border border-black px-1 py-[.08rem] rounded hover:bg-gray-300"
+                                        onClick={() =>
+                                            (window.location.href = `/stocks/${stock.symbol}`)
+                                        }
+                                    >
                                         <Image
                                             src={SmallGraphImage}
                                             alt="graph"

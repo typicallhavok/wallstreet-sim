@@ -1,5 +1,5 @@
-import { AuthProvider } from './Contexts/AuthContext';
-import Navbar from './Components/Navbar';
+import { AuthProvider } from './contexts/AuthContext';
+import Navbar from './components/Navbar';
 import './globals.css';
 import { League_Spartan } from 'next/font/google';
 

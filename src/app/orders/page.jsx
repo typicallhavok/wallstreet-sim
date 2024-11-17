@@ -1,8 +1,10 @@
 "use client";
-import Watchlist from "../Components/Watchlist";
-import { useAuth } from "../Contexts/AuthContext";
+import Watchlist from "../components/Watchlist";
+import { useAuth } from "../contexts/AuthContext";
 import ordersImg from "../assets/img/ordersIMG.png";
 import Image from "next/image";
+import Link from "next/link";
+
 const Orders = () => {
     const { user } = useAuth();
 
@@ -13,6 +15,21 @@ const Orders = () => {
             time: date.toLocaleTimeString(),
         };
     };
+
+    if (!user?.orders.length) {
+        return (
+            <div className="page-container">
+                <span className="text-center text-2xl font-bold flex justify-center items-center h-full w-full flex-col gap-4">
+                    No orders found
+                    <Link href="/dashboard">
+                        <span className="text-primary hover:underline">
+                            Go to dashboard
+                        </span>
+                    </Link>
+                </span>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -32,19 +49,36 @@ const Orders = () => {
                             <table className="w-full">
                                 <thead className="sticky top-0 bg-white">
                                     <tr className="text-center border-b-2 border-black text-[1.1rem]">
-                                        <th className="py-3 px-4 w-[200px]">Name</th>
-                                        <th className="py-3 px-4 text-center">Quantity</th>
-                                        <th className="py-3 px-4 text-center">Total</th>
-                                        <th className="py-3 px-4 text-center">Date</th>
-                                        <th className="py-3 px-4 text-center">Type</th>
-                                        <th className="py-3 px-4 text-center">Price</th>
+                                        <th className="py-3 px-4 w-[200px]">
+                                            Name
+                                        </th>
+                                        <th className="py-3 px-4 text-center">
+                                            Quantity
+                                        </th>
+                                        <th className="py-3 px-4 text-center">
+                                            Total
+                                        </th>
+                                        <th className="py-3 px-4 text-center">
+                                            Date
+                                        </th>
+                                        <th className="py-3 px-4 text-center">
+                                            Type
+                                        </th>
+                                        <th className="py-3 px-4 text-center">
+                                            Price
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {user?.orders?.map((order, index) => {
-                                        const { date, time } = formatDateTime(order.date);
+                                        const { date, time } = formatDateTime(
+                                            order.date
+                                        );
                                         return (
-                                            <tr key={index} className="border-b hover:bg-gray-50 shadow-md">
+                                            <tr
+                                                key={index}
+                                                className="border-b hover:bg-gray-50 shadow-md"
+                                            >
                                                 <td className="py-4 px-4 w-[200px] relative group">
                                                     <div className="truncate">
                                                         {order.name}
@@ -53,16 +87,24 @@ const Orders = () => {
                                                         </span>
                                                     </div>
                                                 </td>
-                                                <td className="py-4 px-4 text-center">{order.quantity}</td>
-                                                <td className="py-4 px-4 text-center">{order.amount.toFixed(2)}</td>
+                                                <td className="py-4 px-4 text-center">
+                                                    {order.quantity}
+                                                </td>
+                                                <td className="py-4 px-4 text-center">
+                                                    {order.amount.toFixed(2)}
+                                                </td>
                                                 <td className="py-4 px-4 text-center relative group">
                                                     <span>{date}</span>
                                                     <span className="hidden group-hover:block absolute bg-gray-800 text-white p-2 rounded -mt-1 ml-2 text-sm z-10">
                                                         {time}
                                                     </span>
                                                 </td>
-                                                <td className="py-4 px-4 text-center">{order.type}</td>
-                                                <td className="py-4 px-4 text-center">{order.price.toFixed(2)}</td>
+                                                <td className="py-4 px-4 text-center">
+                                                    {order.type}
+                                                </td>
+                                                <td className="py-4 px-4 text-center">
+                                                    {order.price.toFixed(2)}
+                                                </td>
                                             </tr>
                                         );
                                     })}

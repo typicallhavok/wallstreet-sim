@@ -1,14 +1,30 @@
 "use client";
-import Watchlist from "../Components/Watchlist";
-import { useAuth } from "../Contexts/AuthContext";
-import SuitcaseIcon from "../Components/SuitcaseIcon.jsx";
+import Watchlist from "../components/Watchlist";
+import { useAuth } from "../contexts/AuthContext";
+import SuitcaseIcon from "../components/SuitcaseIcon.jsx";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 const Holdings = () => {
     const { user } = useAuth();
     const [currentPrices, setCurrentPrices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    if (!user?.holdings?.length) {
+        return (
+            <div className="page-container">
+                <span className="text-center text-2xl font-bold flex justify-center items-center h-full w-full flex-col gap-4">
+                    No holdings found
+                    <Link href="/dashboard">
+                        <span className="text-primary hover:underline">
+                            Go to dashboard
+                        </span>
+                    </Link>
+                </span>
+            </div>
+        );
+    }
 
     useEffect(() => {
         if (user) {
@@ -114,15 +130,30 @@ const Holdings = () => {
                                                     {currentPrices[
                                                         holding.symbol
                                                     ] &&
-                                                        (((currentPrices[
-                                                            holding.symbol
-                                                        ] * holding.quantity -
-                                                            holding.amount) /
-                                                            holding.amount) *
-                                                            100).toFixed(2)}
+                                                        (
+                                                            ((currentPrices[
+                                                                holding.symbol
+                                                            ] *
+                                                                holding.quantity -
+                                                                holding.amount) /
+                                                                holding.amount) *
+                                                            100
+                                                        ).toFixed(2)}
                                                     %
                                                 </td>
-                                                <td className="py-4 px-4 text-center">
+                                                <td
+                                                    className={`py-4 px-4 text-center ${
+                                                        (currentPrices[
+                                                            holding.symbol
+                                                        ] *
+                                                            holding.quantity -
+                                                            holding.amount) /
+                                                            holding.amount >
+                                                        0
+                                                            ? "text-green-500"
+                                                            : "text-red-500"
+                                                    }`}
+                                                >
                                                     {currentPrices[
                                                         holding.symbol
                                                     ] &&

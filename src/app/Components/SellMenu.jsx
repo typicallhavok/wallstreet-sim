@@ -14,7 +14,7 @@ const SellMenu = ({ stockSymbol, user, setSellMenuDisplay }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await fetch(`/api/stock/${stockSymbol}`);
+            const res = await fetch(`/api/getQuote/${stockSymbol}`);
             const data = await res.json();
             setStockData(data);
         };

@@ -11,11 +11,12 @@ const BuyMenu = ({ stockSymbol, user, setBuyMenuDisplay }) => {
     const [stockData, setStockData] = useState(null);
     const [quantity, setQuantity] = useState(0);
     const [date, setDate] = useState(null);
+    const [error, setError] = useState(null);
     
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await fetch(`/api/stock/${stockSymbol}`);
+            const res = await fetch(`/api/getQuote/${stockSymbol}`);
             const data = await res.json();
             setStockData(data);
         };
@@ -23,35 +24,47 @@ const BuyMenu = ({ stockSymbol, user, setBuyMenuDisplay }) => {
     }, []);
 
     const handleBuy = async () => {
-        const requestBody = {
-            quantity,
-            ...(date && { 
-                date: new Date(date + 'T00:00:00Z').toISOString() 
-            })
-        };
+        try {
+            const requestBody = {
+                quantity,
+                ...(date && { 
+                    date: new Date(date + 'T00:00:00Z').toISOString() 
+                })
+            };
 
-        const res = await fetch(`/api/buy/${stockSymbol}`, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestBody),
-            credentials: "include",
-        });
-        if(res.status === 200) {
-            setBuyMenuDisplay(false);
-            window.location.reload();
+            const res = await fetch(`/api/buy/${stockSymbol}`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody),
+                credentials: "include",
+            });
+            
+            const data = await res.json();
+            
+            if(res.status === 200) {
+                setBuyMenuDisplay(false);
+                window.location.reload();
+            } else {
+                setError(data.message || 'An error occurred while processing your request');
+            }
+        } catch (err) {
+            setError('An error occurred while processing your request');
         }
     };
 
     const changeDate = async (date) => {
         const res = await fetch(`/api/getPrice/${stockSymbol}?date=${date}`);
         const data = await res.json();
-        setStockData({...stockData, regularMarketPrice: data});
+        setStockData({...stockData, regularMarketPrice: Number(data)});
         setDate(date);
     };
 
     if (!stockData) return <div className="loading" />;
+
+    const price = Number(stockData.regularMarketPrice) || 0;
+    const total = price * Number(quantity) || 0;
 
     return (
         <div className="w-[300px] h-[440px] bg-white rounded-lg shadow-md">
@@ -89,15 +102,18 @@ const BuyMenu = ({ stockSymbol, user, setBuyMenuDisplay }) => {
                 <span className="text-sm text-black">
                     Price:{" "}
                     <span className="font-bold">
-                        {(stockData.regularMarketPrice).toFixed(2)}
+                        ₹{price.toFixed(2)}
                     </span>
                 </span>
                 <span className="text-sm text-black">
                     Total Price:{" "}
                     <span className="font-bold">
-                        {(stockData.regularMarketPrice * quantity).toFixed(2)}
+                        ₹{total.toFixed(2)}
                     </span>
                 </span>
+                {error && (
+                    <p className="text-sm text-red-500">{error}</p>
+                )}
                 <button className="button" onClick={handleBuy}>Buy</button>
                 <button className="button" onClick={() => setBuyMenuDisplay(false)}>Cancel</button>
             </div>

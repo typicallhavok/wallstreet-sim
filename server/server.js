@@ -189,6 +189,18 @@ app.prepare()
             res.status(200).json(result.value);
         });
 
+        server.get("/api/getChart/:symbol", async (req, res) => {
+            const { symbol } = req.params;
+            const result = await getChartData(symbol, "2018-01-01");
+            if (result) {
+                res.status(200).json(result);
+            } else {
+                res.status(404).json({ 
+                    message: "No data found for this symbol. It may be delisted or invalid." 
+                });
+            }
+        });
+
         server.get("/api/pin", async (req, res) => {
             const { symbol } = req.query;
             const result = await pinStock(symbol, req.user.username);
@@ -201,13 +213,6 @@ app.prepare()
             const result = await unpinStock(symbol, req.user.username);
             if (result) res.status(200).json(result);
             else res.status(400).json({ message: "Failed to unpin stock" });
-        });
-
-        server.get("/api/stock/:symbol", async (req, res) => {
-            const { symbol } = req.params;
-            const result = await getQuote(symbol);
-            if (result) res.status(200).json(result);
-            else res.status(400).json({ message: "Failed to get quote" });
         });
 
         server.post("/api/buy/:symbol", async (req, res) => {
@@ -240,8 +245,13 @@ app.prepare()
         server.get("/api/getQuote/:symbol", async (req, res) => {
             const { symbol } = req.params;
             const result = await getQuote(symbol);
-            if (result) res.status(200).json(result);
-            else res.status(400).json({ message: "Failed to get quote" });
+            if (result) {
+                res.status(200).json(result);
+            } else {
+                res.status(404).json({ 
+                    message: "No data found for this symbol. It may be delisted or invalid." 
+                });
+            }
         });
 
         server.post("/api/sell/:symbol", async (req, res) => {
@@ -268,11 +278,11 @@ app.prepare()
             const { date } = req.query;
             const result = await getPrice(symbol, date);
 
-            if (result) {
+            if (result !== null) {
                 res.status(200).json(result);
             } else {
-                res.status(400).json({
-                    message: "Failed to get price",
+                res.status(404).json({
+                    message: "No price data found for this symbol. It may be delisted or invalid."
                 });
             }
         });

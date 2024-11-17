@@ -1,6 +1,6 @@
 "use client";
-import { useAuth } from "../Contexts/AuthContext";
-import Watchlist from "../Components/Watchlist.jsx";
+import { useAuth } from "../contexts/AuthContext";
+import Watchlist from "../components/Watchlist.jsx";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,8 +10,10 @@ import ordersImg from "../assets/img/ordersIMG.png";
 const Funds = () => {
     const { user } = useAuth();
     const [addFunds, setAddFunds] = useState("");
+    const [error, setError] = useState(null);
 
     const handleAddFunds = async () => {
+        if (addFunds === "") {setError("Amount cannot be empty"); return;}
         const result = await fetch(`/api/users/addFunds?amount=${addFunds}`, {
             method: "GET",
             headers: {
@@ -96,6 +98,7 @@ const Funds = () => {
                     </div>
                 </div>
                 <Watchlist />
+                <span className="z-20 alert-danger absolute left-50">{error}</span>
             </div>
         </>
     );

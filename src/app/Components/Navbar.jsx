@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useAuth } from "../Contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import { usePathname } from "next/navigation";
 
 const Navbar = () => {

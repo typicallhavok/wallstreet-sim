@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useAuth } from "../Contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import { useRouter } from "next/navigation";
 
 const Register = () => {
@@ -31,11 +31,11 @@ const Register = () => {
                 setError("");
             }
         }
-    }, [formData.confirmPassword]);
+    }, [formData.password, formData.confirmPassword]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        
+
         if (!formData.gender) {
             setError("Please select a gender");
             return;
@@ -85,9 +85,7 @@ const Register = () => {
         <div className="container shadow-lg rounded-lg">
             <form onSubmit={handleSubmit} className="form">
                 <div className="item">
-                    <h1 className="text-2xl font-bold text-center">
-                        Register
-                    </h1>
+                    <h1 className="text-2xl font-bold text-center">Register</h1>
                 </div>
                 <div className="item">
                     <div className="floating-label">
@@ -196,8 +194,8 @@ const Register = () => {
                             confirm password
                         </label>
                     </div>
+                    {error && <div className="alert alert-danger">{error}</div>}
                 </div>
-                {error && <div className="alert alert-danger">{error}</div>}
                 <div className="submit-div">
                     <Link href="/login">Already a user? Login</Link>
                     <button
