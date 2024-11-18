@@ -1,6 +1,27 @@
 ## Stock Trainer
 
-This is an app where you can practice investing and gain experience, before investing in the real word environment
+This is an app where you can practice investing and gain experience, before investing in the real word environment.
+
+Master the stock market with our intuitive stock
+simulator. Trade real-time stocks with virtual money
+and sharpen your investing skills risk-free!
+
+## Features
+
+**Risk Free Trading** 
+
+Practice trading with virtual money in a real market environment
+
+**Charts & Graphs**
+
+Advanced technical analysis tools to make informed decisions
+
+**Watchlist**
+
+Track your favorite stocks and never miss an opportunity
+
+**Portfolio**
+Monitor your investments and track performance
 
 ## Setup
 
