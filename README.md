@@ -21,6 +21,7 @@ Advanced technical analysis tools to make informed decisions
 Track your favorite stocks and never miss an opportunity
 
 **Portfolio**
+
 Monitor your investments and track performance
 
 ## Setup
