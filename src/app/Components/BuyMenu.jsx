@@ -9,7 +9,7 @@ const BuyMenu = ({ stockSymbol, user, setBuyMenuDisplay }) => {
     }
 
     const [stockData, setStockData] = useState(null);
-    const [quantity, setQuantity] = useState(0);
+    const [quantity, setQuantity] = useState(1);
     const [date, setDate] = useState(null);
     const [error, setError] = useState(null);
     
@@ -22,6 +22,10 @@ const BuyMenu = ({ stockSymbol, user, setBuyMenuDisplay }) => {
         };
         fetchData();
     }, []);
+
+    useEffect(() => {
+        if(quantity<1) setQuantity(1);
+    }, [quantity]);
 
     const handleBuy = async () => {
         try {
@@ -48,6 +52,9 @@ const BuyMenu = ({ stockSymbol, user, setBuyMenuDisplay }) => {
                 window.location.reload();
             } else {
                 setError(data.message || 'An error occurred while processing your request');
+                setTimeout(() => {
+                    setError(null);
+                }, 2000);
             }
         } catch (err) {
             setError('An error occurred while processing your request');
@@ -66,6 +73,8 @@ const BuyMenu = ({ stockSymbol, user, setBuyMenuDisplay }) => {
     const price = Number(stockData.regularMarketPrice) || 0;
     const total = price * Number(quantity) || 0;
 
+    if(error) return <div className="text-red-500 bg-red-100 border border-red-500 rounded-md p-2">{error}</div>;
+
     return (
         <div className="w-[300px] h-[440px] bg-white rounded-lg shadow-md">
             <div className="flex flex-col h-[75px] bg-primary rounded-t-lg p-5 justify-center">
@@ -79,6 +88,7 @@ const BuyMenu = ({ stockSymbol, user, setBuyMenuDisplay }) => {
                     placeholder="Quantity"
                     className="w-full p-2 rounded-md border border-gray-300"
                     value={quantity}
+                    min={1}
                     onChange={(e) => setQuantity(e.target.value)}
                 />
                 <div>
@@ -89,6 +99,7 @@ const BuyMenu = ({ stockSymbol, user, setBuyMenuDisplay }) => {
                             id="date" 
                             className="w-full p-2 rounded-md border border-gray-300" 
                             value={date || ''} 
+                            max={new Date().toISOString().split('T')[0]}
                             onChange={(e) => changeDate(e.target.value)} 
                         />
                         <button 
@@ -112,7 +123,7 @@ const BuyMenu = ({ stockSymbol, user, setBuyMenuDisplay }) => {
                     </span>
                 </span>
                 {error && (
-                    <p className="text-sm text-red-500">{error}</p>
+                    <p className="text-sm text-red-500 bg-white rounded-md p-2">{error}</p>
                 )}
                 <button className="button" onClick={handleBuy}>Buy</button>
                 <button className="button" onClick={() => setBuyMenuDisplay(false)}>Cancel</button>

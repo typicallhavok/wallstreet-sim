@@ -195,8 +195,9 @@ app.prepare()
             if (result) {
                 res.status(200).json(result);
             } else {
-                res.status(404).json({ 
-                    message: "No data found for this symbol. It may be delisted or invalid." 
+                res.status(404).json({
+                    message:
+                        "No data found for this symbol. It may be delisted or invalid.",
                 });
             }
         });
@@ -218,11 +219,16 @@ app.prepare()
         server.post("/api/buy/:symbol", async (req, res) => {
             const { symbol } = req.params;
             const { quantity, date } = req.body;
+            if(quantity<1) return res.status(400).json({ message: "Invalid quantity" });
             const username = req.user.username;
             const stockQuote = await getQuote(symbol);
             let price = stockQuote.regularMarketPrice;
             if (date) {
-                price = await getPrice(symbol, date);
+                if (date <= new Date().toISOString().split("T")[0]) {
+                    price = await getPrice(symbol, date);
+                } else {
+                    return res.status(400).json({ message: "Invalid date" });
+                }
             }
             if (!stockQuote) {
                 return res.status(400).json({ message: "Failed to get quote" });
@@ -248,8 +254,9 @@ app.prepare()
             if (result) {
                 res.status(200).json(result);
             } else {
-                res.status(404).json({ 
-                    message: "No data found for this symbol. It may be delisted or invalid." 
+                res.status(404).json({
+                    message:
+                        "No data found for this symbol. It may be delisted or invalid.",
                 });
             }
         });
@@ -257,6 +264,7 @@ app.prepare()
         server.post("/api/sell/:symbol", async (req, res) => {
             const { symbol } = req.params;
             const { quantity } = req.body;
+            if(quantity<1) return res.status(400).json({ message: "Invalid quantity" });
             const username = req.user.username;
             const stockQuote = await getQuote(symbol);
             const result = await sellStock(
@@ -282,7 +290,8 @@ app.prepare()
                 res.status(200).json(result);
             } else {
                 res.status(404).json({
-                    message: "No price data found for this symbol. It may be delisted or invalid."
+                    message:
+                        "No price data found for this symbol. It may be delisted or invalid.",
                 });
             }
         });

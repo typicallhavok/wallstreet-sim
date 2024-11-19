@@ -21,6 +21,10 @@ const SellMenu = ({ stockSymbol, user, setSellMenuDisplay }) => {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        if(quantity<1) setQuantity(1);
+    }, [quantity]);
+
     const handleSell = async () => {
         console.log("quantity", JSON.stringify({ quantity }));
         const res = await fetch(`/api/sell/${stockSymbol}`, {
@@ -52,6 +56,7 @@ const SellMenu = ({ stockSymbol, user, setSellMenuDisplay }) => {
                     placeholder="Quantity"
                     className="w-full p-2 rounded-md border border-gray-300"
                     value={quantity}
+                    min={1}
                     onChange={(e) => setQuantity(e.target.value)}
                 />
                 <span className="text-sm text-black">
