@@ -11,8 +11,8 @@ const Orders = () => {
     const formatDateTime = (dateString) => {
         const date = new Date(dateString);
         return {
-            date: date.toLocaleDateString(),
-            time: date.toLocaleTimeString(),
+            date: date.toLocaleDateString("en-IN"),
+            time: date.toLocaleTimeString("en-IN"),
         };
     };
 

@@ -2,14 +2,19 @@ const yahooFinance = require("yahoo-finance2").default;
 const fs = require("fs");
 
 const search = async (query) => {
-    const result = await yahooFinance.search(query);
-    const searchData = [];
-    result.quotes.forEach((quote) => {
-        const { exchDisp, shortname, isYahooFinance, longname, symbol } = quote;
-        if (isYahooFinance)
-            searchData.push({ exchDisp, shortname, longname, symbol });
-    });
-    return searchData;
+    try {
+        const result = await yahooFinance.search(query);
+        const searchData = [];
+        result.quotes.forEach((quote) => {
+            const { exchDisp, shortname, isYahooFinance, longname, symbol } = quote;
+            if (isYahooFinance)
+                searchData.push({ exchDisp, shortname, longname, symbol });
+        });
+        return searchData;
+    } catch (error) {
+        console.error("Error buying stock:", error);
+        throw error;
+    }
 };
 
 const getQuote = async (symbol) => {

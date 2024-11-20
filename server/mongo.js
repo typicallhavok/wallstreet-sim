@@ -34,15 +34,20 @@ const findUser = async (username) => {
 };
 
 const insertCache = async (key, value) => {
-    const existingCache = await findCache(key);
-    if (existingCache) {
-        existingCache.value = value;
-        const result = await existingCache.save();
+    try {
+        const existingCache = await findCache(key);
+        if (existingCache) {
+            existingCache.value = value;
+            const result = await existingCache.save();
+            return result;
+        }
+        const cache = new Cache({ key, value });
+        const result = await cache.save();
         return result;
+    } catch (error) {
+        console.error("Error buying stock:", error);
+        throw error;
     }
-    const cache = new Cache({ key, value });
-    const result = await cache.save();
-    return result;
 };
 
 const findCache = async (key) => {
@@ -51,43 +56,58 @@ const findCache = async (key) => {
 };
 
 const insertNiftyCache = async () => {
-    const existingCache = await findCache("nifty-chart-data");
-    if (existingCache) {
-        const currDate = new Date().setHours(0, 0, 0, 0);
-        const cacheDate = new Date(
-            JSON.parse(existingCache.value).meta.regularMarketTime
-        ).setHours(0, 0, 0, 0);
-        if (currDate > cacheDate) {
-            return true;
+    try {
+        const existingCache = await findCache("nifty-chart-data");
+        if (existingCache) {
+            const currDate = new Date().setHours(0, 0, 0, 0);
+            const cacheDate = new Date(
+                JSON.parse(existingCache.value).meta.regularMarketTime
+            ).setHours(0, 0, 0, 0);
+            if (currDate > cacheDate) {
+                return true;
+            }
         }
+        return false;
+    } catch (error) {
+        console.error("Error buying stock:", error);
+        throw error;
     }
-    return false;
 };
 
 const pinStock = async (symbol, username) => {
-    const user = await findUser(username);
-    if (user) {
-        if (user.watchlist.includes(symbol)) {
-            return false;
+    try {
+        const user = await findUser(username);
+        if (user) {
+            if (user.watchlist.includes(symbol)) {
+                return false;
+            }
+            user.watchlist.push(symbol);
+            const result = await user.save();
+            return result;
         }
-        user.watchlist.push(symbol);
-        const result = await user.save();
-        return result;
+        return false;
+    } catch (error) {
+        console.error("Error buying stock:", error);
+        throw error;
     }
-    return false;
 };
 
 const unpinStock = async (symbol, username) => {
-    const user = await findUser(username);
-    if (user) {
-        user.watchlist = user.watchlist.filter((item) => item !== symbol);
-        const result = await user.save();
-        return result;
+    try {
+        const user = await findUser(username);
+        if (user) {
+            user.watchlist = user.watchlist.filter((item) => item !== symbol);
+            const result = await user.save();
+            return result;
+        }
+        return false;
+    } catch (error) {
+        console.error("Error buying stock:", error);
+        throw error;
     }
-    return false;
 };
 
-const buyStock = async (symbol, quantity, username, date=new Date(), price, name) => {
+const buyStock = async (symbol, quantity, username, date = new Date(), price, name) => {
     date = new Date(date);
     quantity = parseInt(quantity);
     try {
@@ -213,19 +233,24 @@ const sellStock = async (symbol, quantity, username, price, name) => {
 };
 
 const addFunds = async (amount, username) => {
-    const user = await findUser(username);
-    user.funds += amount;
-    user.orders.push({
-        symbol: "FUNDS",
-        quantity: amount,
-        price: 0,
-        name: "Funds",
-        date: new Date(),
-        type: "addFunds",
-        amount,
-    });
-    const result = await user.save();
-    return result;
+    try {
+        const user = await findUser(username);
+        user.funds += amount;
+        user.orders.push({
+            symbol: "FUNDS",
+            quantity: amount,
+            price: 0,
+            name: "Funds",
+            date: new Date(),
+            type: "addFunds",
+            amount,
+        });
+        const result = await user.save();
+        return result;
+    } catch (error) {
+        console.error("Error buying stock:", error);
+        throw error;
+    }
 };
 
 module.exports = {

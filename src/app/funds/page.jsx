@@ -13,7 +13,7 @@ const Funds = () => {
     const [error, setError] = useState(null);
 
     const handleAddFunds = async () => {
-        if (addFunds === "") {setError("Amount cannot be empty"); return;}
+        if (addFunds === "") { setError("Amount cannot be empty"); return; }
         const result = await fetch(`/api/users/addFunds?amount=${addFunds}`, {
             method: "GET",
             headers: {
@@ -47,7 +47,7 @@ const Funds = () => {
                         <span className="font2 text-8xl font-[300] mt-10">
                             {user?.funds.toFixed(2) > 1000
                                 ? (user?.funds.toFixed(2) / 1000).toFixed(2) +
-                                  "k"
+                                "k"
                                 : user?.funds.toFixed(2)}
                         </span>
                         <span className="font2 text-4xl font-[100] py-4">
@@ -98,7 +98,7 @@ const Funds = () => {
                     </div>
                 </div>
                 <Watchlist />
-                <span className="z-20 alert-danger absolute left-50">{error}</span>
+                {error && <span className="z-20 alert-danger absolute left-50">{error}</span>}
             </div>
         </>
     );

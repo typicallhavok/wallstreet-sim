@@ -46,7 +46,7 @@ const HoldingsGraph = ({ stocks, currentPrices }) => {
         ],
         backgroundColor: colorPalette[index % colorPalette.length],
         barPercentage: 0.95,
-        categoryPercentage: 1.0,
+        categoryPercentage: 0.95,
     }));
 
     const data = {

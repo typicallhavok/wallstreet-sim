@@ -114,9 +114,7 @@ const Dashboard = () => {
                     </div>
                 </div>
                 <Watchlist setError={setError}/>
-                <div className="flex flex-col gap-2 px-5 absolute bottom-0 w-3/5">
-                    {error && <p className="text-red-500">{error.message}</p>}
-                </div>
+                {error && <span className="z-20 alert-danger absolute left-50">{error}</span>}
             </div>
         </>
     );

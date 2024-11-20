@@ -172,6 +172,7 @@ const Holdings = () => {
                     </div>
                 </div>
                 <Watchlist />
+                {error && <span className="z-20 alert-danger absolute left-50">{error}</span>}
             </div>
         </>
     );
