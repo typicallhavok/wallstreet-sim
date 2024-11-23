@@ -10,7 +10,6 @@ const SellMenu = ({ stockSymbol, user, setSellMenuDisplay }) => {
 
     const [stockData, setStockData] = useState(null);
     const [quantity, setQuantity] = useState(0);
-    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -22,7 +21,7 @@ const SellMenu = ({ stockSymbol, user, setSellMenuDisplay }) => {
     }, []);
 
     useEffect(() => {
-        if(quantity<1) setQuantity(1);
+        if (quantity < 1) setQuantity(1);
     }, [quantity]);
 
     const handleSell = async () => {
@@ -30,12 +29,12 @@ const SellMenu = ({ stockSymbol, user, setSellMenuDisplay }) => {
         const res = await fetch(`/api/sell/${stockSymbol}`, {
             method: "POST",
             headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json",
             },
             body: JSON.stringify({ quantity }),
             credentials: "include",
         });
-        if(res.status === 200) {
+        if (res.status === 200) {
             setSellMenuDisplay(false);
             window.location.reload();
         }
@@ -59,14 +58,30 @@ const SellMenu = ({ stockSymbol, user, setSellMenuDisplay }) => {
                     min={1}
                     onChange={(e) => setQuantity(e.target.value)}
                 />
-                <span className="text-sm text-black">
-                    Price:{" "}
+                <span className="text-sm text-black flex justify-between">
                     <span className="font-bold">
+                        Price:{" "}
                         {(stockData.regularMarketPrice * quantity).toFixed(2)}
                     </span>
+                    <span className="font-bold">
+                        You Have:{" "}
+                        {user.holdings.some((h) => h.symbol === stockSymbol)
+                            ? user.holdings.find(
+                                  (h) => h.symbol === stockSymbol
+                              ).quantity
+                            : 0}
+                    </span>
                 </span>
-                <button className="button" onClick={handleSell}>Sell</button>
-                <button className="button" onClick={() => setSellMenuDisplay(false)}>Cancel</button>
+
+                <button className="button" onClick={handleSell}>
+                    Sell
+                </button>
+                <button
+                    className="button"
+                    onClick={() => setSellMenuDisplay(false)}
+                >
+                    Cancel
+                </button>
             </div>
         </div>
     );

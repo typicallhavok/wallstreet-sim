@@ -381,7 +381,6 @@ body {
     }
 }
 
-/* Add these new animation classes */
 .feature-card-animation {
     opacity: 0;
     animation: cardSlideUp 0.8s cubic-bezier(0.65, 0, 0.35, 1) forwards;
