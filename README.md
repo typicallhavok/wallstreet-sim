@@ -38,6 +38,4 @@ Run server
 
 `yarn dev`
 
-**Demo**
-
-https://drive.google.com/file/d/1Kq5fMS0nzDcaAVH6m-u__OM2ly5TQAfQ/view?usp=sharing
+**[https://drive.google.com/file/d/15VyoU2p4axvcbPkAlEmBZnxD6krXSim3/view?usp=sharing](Demo)**
