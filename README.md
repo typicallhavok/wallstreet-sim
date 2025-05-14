@@ -30,6 +30,14 @@ Setup mongodb server and database stonks.
 
 Run these commands to run the server
 
+To install yarn
+
+`npm install --global yarn`
+
+To install dependencies
+
+`yarn`
+
 To build
 
 `yarn build`
