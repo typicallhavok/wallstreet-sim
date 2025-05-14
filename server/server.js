@@ -28,10 +28,12 @@ const app = next({
 const handle = app.getRequestHandler();
 
 insertNiftyCache().then((result) => {
-    if (result) {
+    if (!result) {
         getChartData("^NSEI", "2018-01-01").then((result) =>
             insertCache("nifty-chart-data", JSON.stringify(result))
-        );
+        ).catch((err) => {
+            console.error("Error inserting nifty chart data:", err);
+        });
     }
 });
 
