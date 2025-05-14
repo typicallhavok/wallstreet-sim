@@ -46,6 +46,6 @@ Run server
 
 `yarn dev`
 
-**DEMO**
+## Demo
 
 Here is a **[Demo](https://drive.google.com/file/d/15VyoU2p4axvcbPkAlEmBZnxD6krXSim3/view?usp=sharing)** of the project
