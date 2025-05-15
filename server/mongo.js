@@ -58,18 +58,30 @@ const findCache = async (key) => {
 const insertNiftyCache = async () => {
     try {
         const existingCache = await findCache("nifty-chart-data");
-        if (existingCache) {
-            const currDate = new Date().setHours(0, 0, 0, 0);
-            const cacheDate = new Date(
-                JSON.parse(existingCache.value).meta.regularMarketTime
-            ).setHours(0, 0, 0, 0);
-            if (currDate > cacheDate) {
-                return true;
+        if (existingCache && existingCache.value) {
+            try {
+                const parsedValue = JSON.parse(existingCache.value);
+                if (parsedValue && parsedValue.meta && parsedValue.meta.regularMarketTime) {
+                    const currDate = new Date().setHours(0, 0, 0, 0);
+                    const cacheDate = new Date(parsedValue.meta.regularMarketTime).setHours(0, 0, 0, 0);
+                    if (currDate > cacheDate) {
+                        return true;
+                    }
+                } else {
+                    // Missing expected structure in cache
+                    return true;
+                }
+            } catch (parseError) {
+                console.error("Error parsing cache value:", parseError);
+                return true; // Return true to indicate cache needs refresh
             }
+        } else {
+            // No existing cache or empty value
+            return true;
         }
         return false;
     } catch (error) {
-        console.error("Error buying stock:", error);
+        console.error("Error checking nifty cache:", error);
         throw error;
     }
 };
