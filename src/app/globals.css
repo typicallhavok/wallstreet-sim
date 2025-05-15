@@ -53,16 +53,13 @@ body {
 }
 
 .page-container {
-    width: 95%;
-    max-width: 1400px;
-    height: auto;
-    min-height: 84vh;
-    margin: 1rem auto;
+    width: 80%;
+    height: 84vh;
+    margin: 2.5rem auto;
     display: flex;
     background: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     border-radius: 0.5rem;
-    overflow: hidden;
 }
 
 .form {
