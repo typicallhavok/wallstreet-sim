@@ -39,7 +39,7 @@ insertNiftyCache().then((result) => {
 
 app.prepare()
     .then(() => {
-        const secretKey = process.env.SECRET_KEY;
+        const secretKey = process.env.SECRET_KEY || "your_secret";
         const server = express();
         server.use(express.json());
         server.use(cookieParser());
